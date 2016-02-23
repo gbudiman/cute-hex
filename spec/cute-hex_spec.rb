@@ -35,7 +35,7 @@ describe CuteHex do
         half_word: '0000 0035',
         word: '00000035' }.each do |k, v|
         CuteHex.config.slicer = k
-        expect(CuteHex.x @a, style: :data).to eq(v)
+        expect(CuteHex.x @a, style: :data, slice: k).to eq(v)
       end
     end
 
@@ -52,6 +52,19 @@ describe CuteHex do
                        '[0000 0010]']
 
         expect(CuteHex.x input).to eq(expectation)
+      end
+    end
+
+    context 'config override' do
+      it ':word_size should be able to be overridden temporarily' do
+        expect(CuteHex.x 0x80, word_size: 16).to eq('[0080]')
+        expect(CuteHex.x 0x80).to eq('[0000 0080]')
+      end
+
+      it ':pad_zero should be able to be overridden temporarily' do
+        CuteHex.config.slicer = :byte
+        expect(CuteHex.x 0x80, word_size: 16, pad_zeros: false, style: :data, slicer: :byte).to eq('   80')
+        expect(CuteHex.x 0x80, style: :data).to eq('00 00 00 80')
       end
     end
   end
