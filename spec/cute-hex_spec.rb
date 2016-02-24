@@ -61,10 +61,27 @@ describe CuteHex do
         expect(CuteHex.x 0x80).to eq('[0000 0080]')
       end
 
-      it ':pad_zero should be able to be overridden temporarily' do
+      it ':pad_zeros should be able to be overridden temporarily' do
         CuteHex.config.slicer = :byte
-        expect(CuteHex.x 0x80, word_size: 16, pad_zeros: false, style: :data, slicer: :byte).to eq('   80')
+        expect(CuteHex.x 0x80, word_size: 16, pad_zeros: false, style: :data).to eq('   80')
+        expect(CuteHex.x 0x315, word_size: 16, pad_zeros: false, style: :data).to eq(' 3 15')
+        expect(CuteHex.x 0x3105, word_size: 16, pad_zeros: false, style: :data).to eq('31 05')
         expect(CuteHex.x 0x80, style: :data).to eq('00 00 00 80')
+      end
+    end
+
+    context ':slicer and :word_size compatibility' do
+      it ':should not interfere with each other' do
+        CuteHex.config.word_size = 64
+        expect(CuteHex.x 0x80, slicer: :nibble, style: :data).to eq('0000 0000 0000 0080')
+        expect(CuteHex.x 0x80, slicer: :half_word, style: :data).to eq('00000000 00000080')
+        expect(CuteHex.x 0x80, slicer: :word, style: :data).to eq('0000000000000080')
+
+        CuteHex.config.word_size = 16
+        expect(CuteHex.x 0x80, slicer: :byte, style: :data).to eq('00 80')
+        expect(CuteHex.x 0x80, slicer: :nibble, style: :data).to eq('0080')
+        expect(CuteHex.x 0x80, slicer: :half_word, style: :data).to eq('00 80')
+        expect(CuteHex.x 0x80, slicer: :word, style: :data).to eq('0080')
       end
     end
   end
