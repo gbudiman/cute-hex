@@ -55,6 +55,20 @@ describe CuteHex do
       end
     end
 
+    context 'null data' do
+      it 'should be displayed as such in :address mode' do
+        expect(CuteHex.x nil, word_size: 16).to eq ('[????]')
+        expect(CuteHex.x nil, word_size: 64).to eq ('[???? ???? ???? ????]')
+      end
+
+      it 'should be displayed as such in :data mode' do
+        CuteHex.config.slicer = :byte
+        expect(CuteHex.x nil, word_size: 16, style: :data).to eq ('?? ??')
+        expect(CuteHex.x nil, word_size: 32, style: :data).to eq ('?? ?? ?? ??')
+        expect(CuteHex.x nil, word_size: 32, style: :data, slicer: :nibble).to eq ('???? ????')
+      end
+    end
+
     context 'config override' do
       it ':word_size should be able to be overridden temporarily' do
         expect(CuteHex.x 0x80, word_size: 16).to eq('[0080]')
@@ -66,6 +80,7 @@ describe CuteHex do
         expect(CuteHex.x 0x80, word_size: 16, pad_zeros: false, style: :data).to eq('   80')
         expect(CuteHex.x 0x315, word_size: 16, pad_zeros: false, style: :data).to eq(' 3 15')
         expect(CuteHex.x 0x3105, word_size: 16, pad_zeros: false, style: :data).to eq('31 05')
+        expect(CuteHex.x nil, word_size: 16, pad_zeros: false, style: :data).to eq('?? ??')
         expect(CuteHex.x 0x80, style: :data).to eq('00 00 00 80')
       end
     end

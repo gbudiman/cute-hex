@@ -10,7 +10,9 @@ a = 0xbeef
 
 # Basic usage
 CuteHex.x a                                                  # [0000 BEEF]
+CuteHex.x nil                                                # [???? ????]
 CuteHex.x a, style: :data                                    # 00 00 BE EF
+CuteHex.x nil, style: :data                                  # ?? ?? ?? ??
 
 # Adjust word size
 CuteHex.x a, word_size: 64                                   # [0000 0000 0000 BEEF]
@@ -23,6 +25,7 @@ CuteHex.x a, word_size: 64, slicer: :word, style: :data      # 000000000000BEEF
 
 # Remove trailing zeros, only work with :data style
 CuteHex.x a, style: :data, pad_zeros: false                  #       BE EF
+CuteHex.x nil, style: :data, pad_zeros: false                # ?? ?? ?? ??
 ```
 
 Overriding default configuration

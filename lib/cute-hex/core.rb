@@ -34,12 +34,12 @@ private
                else word_size / 4
                end
 
-    s = sprintf(format, _x).split('')
+    s = (_x ? sprintf(format, _x) : '?' * (word_size / 4)).split('')
     output = s.each_slice(slice_by).map{ |x| x.join }.join(' ')
 
     if @@config.debug_mode
       p "Format: #{format}"
-      p "Sliced: #{s}"
+      p "Sliced: #{s} (#{_slicer} | #{slice_by})"
       p "Output: #{output}"
     end
 
